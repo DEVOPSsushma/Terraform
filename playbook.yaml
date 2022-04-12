@@ -1,4 +1,4 @@
-- hosts: webservers
+- hosts: webserver
   remote_user: ubuntu
   become_user: root
   become: yes
