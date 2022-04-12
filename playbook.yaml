@@ -1,0 +1,77 @@
+- hosts: webservers
+  remote_user: ubuntu
+  become_user: root
+  become: yes
+  become_method: sudo
+  vars:
+    database:
+      name: wpdb
+      username: wpuser
+      password: DEVOPS123
+      host: localhost
+  tasks:
+    - name: Make sure that apache is installed
+      apt:
+        name: apache2
+        update_cache: yes
+        state: latest
+    - name: Make sure php is installed
+      apt:
+        name: libapache2-mod-php
+        update_cache: yes
+        state: latest
+    - name: Make sure that apache is running
+      service:
+        name: apache2
+        state: started
+    - name: Make sure Mysql php module installed
+      apt:
+        name: php-mysql
+        update_cache: yes
+        state: latest
+    - name: Make sure that index.html file is present in /var/www/html/index.html
+      copy:
+        src: index.html
+        dest: /var/www/html/index.html
+    - name: Install wordpress on remote machine in the path /var/www/html
+      get_url:
+        url: https://wordpress.org/latest.tar.gz
+        dest: /var/www/html
+    - name: Extract the Wordpress file
+      unarchive:
+        remote_src: yes
+        src: https://wordpress.org/latest.tar.gz
+        dest: /var/www/html
+    - name: Remove index.html file
+      file:
+        path: /var/www/html/index.html
+        state: absent
+   - name: Install mysql DB
+      apt:
+        name: python3-mysqldb
+        state: latest
+    - name: Start the Mysql server
+      service:
+        name: mysql
+        state: started
+    - name: create a new Database called Customer1
+      mysql_db:
+        name: wpdb
+        state: present
+        login_user: root
+        login_password: DEVOPS123
+    - name: Set credentials for Customer1
+      mysql_user:
+        name: wpuser
+        priv: '*.*:ALL,GRANT'
+        state: present
+        password: DEVOPS123
+    - name: Copy Wordpress to /var/www/html
+      copy:
+        remote_src: yes
+        src: /var/www/html/wordpress/
+        dest: /var/www/html
+    - name: Make Sure that wp.config.php is present /var/www/html
+      template:
+        src: wp-config.j2
+        dest: /var/www/html/wp-config.php
