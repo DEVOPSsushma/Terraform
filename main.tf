@@ -113,6 +113,7 @@ subnet_id = aws_subnet.Subnet_1a.id
 vpc_security_group_ids = [aws_security_group.port-80.id]
 tags = {
 Name = "webserver"
+Type = "Webserver"
 }
 }
 
@@ -124,6 +125,7 @@ subnet_id = aws_subnet.Subnet_1a.id
 vpc_security_group_ids = [aws_security_group.port-80.id]
 tags = {
 Name = "webserver"
+Type = "Webserver"
 }
 }
 
@@ -135,5 +137,6 @@ subnet_id = aws_subnet.Subnet_1b.id
 vpc_security_group_ids = [aws_security_group.port-3306.id]
 tags = {
 Name = "dbserver"
+Type = "database"
 }
 }
